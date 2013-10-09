@@ -793,15 +793,26 @@ class SnippetManager(object):
 
     def _handle_failure(self, trigger):
         """
-        Mainly make sure that we play well with SuperTab
+        Mainly make sure that we play well with SuperTab or pre-existing keymaps
         """
-        if trigger.lower() == "<tab>":
+        if trigger.lower() == _vim.eval("g:UltiSnipsExpandTrigger").lower() and _vim.eval("g:UltiSnipsExpandTriggerOverrides") != "":
+            feedkey = "" + _vim.eval("g:UltiSnipsExpandTriggerOverrides")
+            mode = "i"
+        elif trigger.lower() == _vim.eval("g:UltiSnipsJumpForwardTrigger").lower() and _vim.eval("g:UltiSnipsJumpForwardTriggerOverrides") != "":
+            feedkey = "" + _vim.eval("g:UltiSnipsJumpForwardTriggerOverrides")
+            mode = "i"
+        elif trigger.lower() == _vim.eval("g:UltiSnipsJumpBackwardTrigger").lower() and _vim.eval("g:UltiSnipsJumpBackwardTriggerOverrides") != "":
+            feedkey = "" + _vim.eval("g:UltiSnipsJumpBackwardTriggerOverrides")
+            mode = "i"
+        elif trigger.lower() == "<tab>":
             feedkey = "\\" + trigger
+            mode = "n"
         elif trigger.lower() == "<s-tab>":
             feedkey = "\\" + trigger
+            mode = "n"
         else:
             feedkey = None
-        mode = "n"
+            mode = "n"
         if not self._supertab_keys:
             if _vim.eval("exists('g:SuperTabMappingForward')") != "0":
                 self._supertab_keys = (
