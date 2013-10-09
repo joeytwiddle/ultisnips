@@ -54,6 +54,21 @@ if !exists("g:UltiSnipsEnableSnipMate")
 endif
 
 function! UltiSnips#map_keys#MapKeys()
+    " Before mapping keys, store any existing keymaps (only the first time, otherwise we will store UltiSnips on the second pass!)
+    " Also escape any magic keys like <C-R> and <CR> in the mapping when we get it.  (TODO: What about <Enter> and <Escape> and ...?!)
+    if !exists('g:UltiSnipsExpandTriggerOverrides')
+        let g:UltiSnipsExpandTriggerOverrides = substitute(maparg(g:UltiSnipsExpandTrigger, 'i'), '<C', '\\<C', 'g')
+        "echo "Stored g:UltiSnipsExpandTriggerOverrides = ".g:UltiSnipsExpandTriggerOverrides
+    endif
+    if !exists('g:UltiSnipsJumpForwardTriggerOverrides')
+        let g:UltiSnipsJumpForwardTriggerOverrides = substitute(maparg(g:UltiSnipsJumpForwardTrigger, 'i'), '<C', '\\<C', 'g')
+        "echo "Stored g:UltiSnipsJumpForwardTriggerOverrides = ".g:UltiSnipsJumpForwardTriggerOverrides
+    endif
+    if !exists('g:UltiSnipsJumpBackwardTriggerOverrides')
+        let g:UltiSnipsJumpBackwardTriggerOverrides = substitute(maparg(g:UltiSnipsJumpBackwardTrigger, 'i'), '<C', '\\<C', 'g')
+        "echo "Stored g:UltiSnipsJumpBackwardTriggerOverrides = ".g:UltiSnipsJumpBackwardTriggerOverrides
+    endif
+
     if g:UltiSnipsExpandTrigger == g:UltiSnipsJumpForwardTrigger
         exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=UltiSnips#ExpandSnippetOrJump()<cr>"
         exec "snoremap <silent> " . g:UltiSnipsExpandTrigger . " <Esc>:call UltiSnips#ExpandSnippetOrJump()<cr>"
