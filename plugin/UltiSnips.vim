@@ -198,6 +198,7 @@ endfunction
 function! UltiSnips_MapKeys()
     " Before mapping keys, store any existing keymaps (only the first time, otherwise we will store UltiSnips on the second pass!)
     " Also escape any magic keys like <C-R> and <CR> in the mapping when we get it.  (TODO: What about <Enter> and <Escape> and ...?!)
+    " BUG: If the mapping was an <expr> mapping then we need to store that information before we override it!
     if !exists('g:UltiSnipsExpandTriggerOverrides')
         let g:UltiSnipsExpandTriggerOverrides = substitute(maparg(g:UltiSnipsExpandTrigger, 'i'), '<C', '\\<C', 'g')
         "echo "Stored g:UltiSnipsExpandTriggerOverrides = ".g:UltiSnipsExpandTriggerOverrides

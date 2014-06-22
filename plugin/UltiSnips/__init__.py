@@ -795,6 +795,7 @@ class SnippetManager(object):
         """
         Mainly make sure that we play well with SuperTab or pre-existing keymaps
         """
+        # BUG: If the mapping was an <expr> mapping, then we need to replay it differently to how we do currently.
         if trigger.lower() == _vim.eval("g:UltiSnipsExpandTrigger").lower() and _vim.eval("g:UltiSnipsExpandTriggerOverrides") != "":
             feedkey = "" + _vim.eval("g:UltiSnipsExpandTriggerOverrides")
             mode = "i"
