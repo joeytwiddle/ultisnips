@@ -836,7 +836,16 @@ class SnippetManager(object):
         if feedkey == r"\<Plug>SuperTabForward" or feedkey == r"\<Plug>SuperTabBackward":
             _vim.command("return SuperTab(%s)" % _vim.escape(mode))
         elif feedkey:
-            _vim.command("return %s" % _vim.escape(feedkey))
+            # This was an attempt to get the result more quickly, by calling the function in the mapping, rather than feeding the mapping into the input buffer.  However, I still see a lot of screen-flickers, which is what I was trying to avoid!  Turns out they were actually caused by using <C-R>=...<CR> insetad of a simple <expr> binding.
+            # In my case, feedkey = "\<C-R>=InsertTabWrapper ("forward")\<CR>"
+            match = re.match(r"\\<C-R>=(.*)\\<CR>", feedkey)
+            if match:
+                #print "MATCHed "+feedkey
+                expression = match.group(1)
+                _vim.command("return "+expression)
+            else:
+                #print "NO match with >"+feedkey+"<"
+                _vim.command("return %s" % _vim.escape(feedkey))
 
     def _snips(self, before, possible):
         """ Returns all the snippets for the given text
