@@ -508,6 +508,9 @@ class SnippetManager(object):
     def __init__(self):
         self._supertab_keys = None
         self._csnippets = []
+        # But I think it might be the screen redrawing, rather than the refresh, which is slow?
+        # This certainly does not manage to prevent the flicker.
+        self.done_load = 0
 
         self.reset()
 
@@ -844,7 +847,10 @@ class SnippetManager(object):
         before the cursor. If possible is True, then get all
         possible matches.
         """
-        self._ensure_all_loaded()
+        # TESTING: Add load once-only behaviour to speed up failure (because I use <Tab> for other things too).
+        if self.done_load == 0:
+            self._ensure_all_loaded()
+            self.done_load = 1
         filetypes = self._filetypes[_vim.buf.nr][::-1]
 
         found_snippets = []
